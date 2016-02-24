@@ -36,82 +36,83 @@
 
 <p>wxpymoo (pronounced "wispy-moo") is a wxPython MOO client, very work-in-progress.  It's intended to run on Windows, MacOS, and Linux/etc.</p>
 
-<p>This is a response to Andrew Wilson's fantastic <a href="http://www.awns.com/tkMOO-light">tkMOO-light</a> MOO client being basically abandoned, and tk-based, which is uugly, and coded in TCL which I find eye-stabbingly difficult to work with.  So I thought I'd see if I could reproduce the 75% of it that I use, in Perl which I understand, and Wx which looks like something even remotely from the 21st century, and so forth.</p>
+<p>This is a response to Andrew Wilson's fantastic <a href="http://www.awns.com/tkMOO-light">tkMOO-light</a> MOO client being basically abandoned, tk-based, which is ugly, and coded in TCL which I find eye-stabbingly difficult to work with.  So I thought I'd see if I could reproduce the 75% of it that I use, using Perl which I understand, and Wx which looks like something even remotely from the 21st century.</p>
 
-<p>Which I did.</p>
+<p><a href="https://github.com/emersonrp/WxMOO">Which I did</a>.</p>
 
-<p>And then started discovering how difficult it is to package and release wxPerl applications.</p>
+<p>And then I started discovering how difficult it is to package and release wxPerl applications.</p>
 
 <p>So I punted, and reimplemented the entire thing in wxPython.  And here we are.</p>
 
 <h2>
-<a id="done" class="anchor" href="#done" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Done:</h2>
+<a id="done" class="anchor" href="#done" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Done</h2>
 
 <ul>
-<li>It connects to a MOO.  Initially, it defaults to my MOO at hayseed.net:7777, specifically, but the Worlds-&gt;Connect dialog now works to connect wherever you like, and it'll remember your last-connected MOO and reconnect there automatically, if you set the preference to.</li>
-<li>It takes input, and shows output.  Almost pleasantly, even.</li>
-<li>The input field has a super-basic but functional command history.</li>
-<li>ANSI color/style codes are supported.</li>
+<li>Connects to a MOO.  Initially, it defaults to my MOO at hayseed.net:7777, but the Worlds-&gt;Connect dialog now works to connect wherever you like.</li>
+<li>Takes input, and shows output.  Almost pleasantly, even.</li>
+<li>Input field has a super-basic but functional command history.</li>
+<li>ANSI color/style codes are well-supported.</li>
 <li>Partial <a href="http://www.moo.mud.org/mcp/mcp2.html">MCP/2.1</a> implementation -- mcp-negotiate is implemented;  mcp-cord is only partially.</li>
 <li>Starting in on MCP packages:
 
 <ul>
-<li>dns-org-mud-moo-simpleedit (external editor configurable)</li>
+<li>dns-com-awns-rehash (partial)</li>
 <li>dns-com-awns-serverinfo</li>
+<li>dns-com-awns-status (partial)</li>
 <li>dns-com-vmoo-client</li>
+<li>dns-com-vmoo-smartcomplete (partial)</li>
+<li>dns-org-mud-moo-simpleedit (external editor configurable)</li>
 </ul>
 </li>
 <li>Saving prefs works, for the small set of prefs it honors.  Lots of work intended here, still.</li>
+<li>Rudimentary tab-complete</li>
 </ul>
 
 <h2>
-<a id="01-milestone" class="anchor" href="#01-milestone" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>0.1 Milestone:</h2>
+<a id="01-milestone" class="anchor" href="#01-milestone" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>0.1 Milestone</h2>
 
 <ul>
-<li>fix output pane scroll-to-bottom behavior to dwym</li>
-<li>More keyboard accelerators;  page-up/down etc
-
-<ul>
-<li>TODO - probably make several profiles (vi-like, emacs-like, windows-like) or maybe just actually expose ways to bind your own choices to everything.</li>
-</ul>
-</li>
+<li>fix output pane scroll-to-bottom behavior to dwym.</li>
+<li>More keyboard accelerators;  page-up/down etc</li>
+<li>make sure it works on MacOS and Windows</li>
+<li>Clean up tab-complete ui</li>
+<li>Finish dns-com-awns-status Toast-style popups</li>
 </ul>
 
 <h2>
-<a id="to-do" class="anchor" href="#to-do" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>To do:</h2>
+<a id="to-do" class="anchor" href="#to-do" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>To do</h2>
 
 <ul>
-<li>Add proper prefs and world/connection handling (85% done!)</li>
-<li>Actually support multiple simultaneous connections (80% done)</li>
-<li>Pondering schemes to scrape online MOO lists to offer suggestions. (70% done!)</li>
-<li>Start making sure it works on Windows and MacOS.  (Has been demonstrated to work at all on Windows, woot.)</li>
+<li>Add proper prefs and world/connection handling (85% done)</li>
+<li>Actually support multiple simultaneous connections (90% done)</li>
+<li>Pondering schemes to scrape online MOO lists to offer suggestions. (70% done)</li>
 <li>Start rolling binary packages for all platforms once it's remotely useful to anyone but me.</li>
 <li>Customizable colors / themes (currently you can have any colors you want as long as they're solarized-dark.)</li>
 <li>Per-world settings?  Colors, fonts?</li>
-<li>Complete the MCP 2.1 implementation.  It does the version dance with the server (both the MCP version, and mcp-negotiate package-version), but ignores whatever it sees.  Also mcp-cord isn't tested/usable at all.</li>
-<li>object browser, like MacMOOSE but hopefully nicer.</li>
-<li>Connections will hopefully have a 'connection type' -- currently thinking in terms of plain'ol TCP port, SSL, and SSH port forwarding (automagic at connection time).</li>
+<li>Finish MCP 2.1 implementation.</li>
+<li>Object browser, like MacMOOSE but hopefully nicer.</li>
+<li>Connections to have a 'connection type' -- currently thinking TCP port, SSL, and SSH port forwarding (automagic at connection time).</li>
 </ul>
 
 <h2>
-<a id="blue-sky" class="anchor" href="#blue-sky" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Blue-sky:</h2>
+<a id="blue-sky" class="anchor" href="#blue-sky" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Blue-sky</h2>
 
 <ul>
 <li>HTML help, using jtext?</li>
-<li>MIME-based external apps, ie mplayer for audio/flac etc?  MCP package to accept MIME+data?</li>
+<li>MIME-based external apps, ie mplayer for audio/flac etc?  MCP package to accept MIME+data?  dns-com-vmoo-mmedia?</li>
 <li>inline MOO syntax highlighting?  Like, detect the output of "<a href="https://github.com/list" class="user-mention">@list</a> $player:tell" and auto-highlight it?</li>
 </ul>
 
 <h2>
-<a id="not-currently-on-the-rader" class="anchor" href="#not-currently-on-the-rader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Not currently on the rader:</h2>
+<a id="things-that-arent-currently-on-the-rader" class="anchor" href="#things-that-arent-currently-on-the-rader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Things that aren't currently on the rader</h2>
 
 <ul>
-<li>tkMOO-light has a whole plugin architecture, and all sorts of third-party additions (I even wrote one, years ago).  I'm not delusional enough to think that there'll be a flourishing ecosystem of developers around <strong>this</strong> MOO client, so I'm not actually desigining with that in mind.  (Update:  MCP packages are now plugin-able.)</li>
+<li>tkMOO-light has a plugin architecture, and all sorts of third-party additions (I even wrote one, years ago).  Ihave no expectation that there'll be an ecosystem of developers around <strong>this</strong> MOO client, so I'm not actually desigining with that in mind.</li>
 <li>I MOO socially, occasionally.  I don't do RPG MUDs or things like that, so I have no need for triggers and macros and so forth.  I don't even have a clear idea of what people do with them.  Convince me.</li>
 </ul>
 
 <h2>
-<a id="guiding-thoughts" class="anchor" href="#guiding-thoughts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Guiding thoughts:</h2>
+<a id="guiding-thoughts" class="anchor" href="#guiding-thoughts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Guiding thoughts</h2>
 
 <ul>
 <li>Monospaced fonts and line-based terminal output are not mutually incompatible with intuitive, pleasant UIs.</li>
@@ -142,6 +143,8 @@
 <a href="http://padre.perlide.org">PADRE</a> is not something I use, being a <a href="http://www.vim.org">vim</a> junkie, but their generously-licensed code for a production wxperl application was an invaluable reference while getting the original perl version working..</li>
 <li>
 <a href="http://www.daringfireball.net">Daring Fireball</a>'s blog graciously supplied to the public domain the <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">URL-detecting regex</a> that I adapted.</li>
+<li>
+<a href="http://www.stackoverflow.com">Stack Overflow</a> has helped me in countless large and small ways.  Specifically, answers by Adaephon, Jeremy Cantrell, and Mark Ransom assisted in getting my head around working with color in Python.</li>
 </ul>
       </section>
     </div>
