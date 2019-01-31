@@ -3,6 +3,7 @@ import wx.adv
 from connection import Connection
 from window.connectdialog import ConnectDialog
 from window.debugmcp import DebugMCP
+from window.infobar import InfoBar
 from window.prefseditor import PrefsEditor
 from window.statusbar import StatusBar
 from window.worldslist import WorldsList
@@ -17,6 +18,7 @@ class Main(wx.Frame):
 
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, title=title)
+        self.infobar = InfoBar(self)
 
         self.status_bar = StatusBar(self)
         self.SetStatusBar(self.status_bar)
@@ -35,7 +37,14 @@ class Main(wx.Frame):
             if prefs.get('window_height'): h = int(prefs.get('window_height'))
         self.SetSize((w, h))
 
-        self.tabs = MOONotebook(self)
+        self.tabs    = MOONotebook(self)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.infobar, wx.SizerFlags().Expand())
+        sizer.Add(self.tabs, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+
+        self.Layout()
 
         self.addEvents()
 
@@ -88,8 +97,9 @@ class Main(wx.Frame):
         Prefs_prefs = PrefsMenu.Append(wx.ID_PREFERENCES)
 
         WindowMenu = wx.Menu()
-        Window_debugmcp = WindowMenu.Append(-1, "&Debug MCP", "")
-        Window_ansi_test = WindowMenu.Append(-1, "&ANSI Color Test", "")
+        Window_debugmcp     = WindowMenu.Append(-1, "&Debug MCP", "")
+        Window_ansi_test    = WindowMenu.Append(-1, "&ANSI Color Test", "")
+        Window_infobar_test = WindowMenu.Append(-1, "&InfoBar Test", "")
 
         HelpMenu = wx.Menu()
         Help_help  = HelpMenu.Append(wx.ID_HELP)
@@ -119,6 +129,7 @@ class Main(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.toggleDebugMCP, Window_debugmcp )
         self.Bind(wx.EVT_MENU, self.ansi_test,      Window_ansi_test )
+        self.Bind(wx.EVT_MENU, self.infobar_test,   Window_infobar_test )
 
         self.Bind(wx.EVT_MENU, self.showHelp,     Help_help  )
         self.Bind(wx.EVT_MENU, self.showAboutBox, Help_about )
@@ -161,6 +172,16 @@ class Main(wx.Frame):
 
     def ansi_test(self, evt):
         self.currentConnection().output_pane.ansi_test()
+
+    def test_button_1(self, evt): wx.MessageDialog(self, "Test Button 1").ShowModal()
+    def test_button_2(self, evt): wx.MessageDialog(self, "Test Button 2").ShowModal()
+    def infobar_test(self, evt):
+        self.infobar.InfoBarMessage("This is a test message for the infobar",
+                [
+                    {'name': 'Button2', 'callback': self.test_button_2},
+                    {'name': 'Button1', 'callback': self.test_button_1},
+                    {'name': 'Close',   'callback': self.infobar.Dismiss },
+                ])
 
     ### DIALOGS AND SUBWINDOWS
 
