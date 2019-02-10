@@ -1,6 +1,5 @@
 import wx
 import time
-import re
 import sys
 from wxasync import StartCoroutine
 import asyncio
@@ -22,17 +21,18 @@ class Connection(wx.SplitterWindow):
 
         self.input_pane     = InputPane(self, self)
         self.output_pane    = OutputPane(self, self)
+        self.main_window    = wx.GetApp().GetTopWindow()
 
         # these two are set with dns_com_awns_serverinfo but hypothetically
         # -could- come from the saved world also
+        # EDIT: and/or from MSSP, which should also be mashed into the world
         self.home_url       = ''
         self.help_url       = ''
 
+        # bin for Telnet IAC commands to stash any status info (on/off, etc)
         self.iac = {}
 
         self.reader = self.writer = None
-
-        #self.keepalive     = Keepalive(self)
 
         self.SplitHorizontally(self.output_pane, self.input_pane)
         self.SetMinimumPaneSize(self.input_pane.font_size()[1] * 2)
@@ -71,12 +71,16 @@ class Connection(wx.SplitterWindow):
 
     def Close(self):
         if self.is_connected:
-            self.output_pane.display("=== wxpymoo: Connection closed. ===\n");
+            self.output_pane.display(b"=== wxpymoo: Connection closed. ===\n");
         # force it again just to be sure
         #self.keepalive.Stop()
         self.connect_time = None
         if self.writer: self.writer.close()
         self.reader = self.writer = None
+
+    # TODO - we need to cram charset into worlds more deterministically
+    def charset(self):
+        return self.world.get('charset', 'latin1') if self.world else 'latin1'
 
     # connection.connect ([host], [port])
     #
@@ -84,8 +88,9 @@ class Connection(wx.SplitterWindow):
     # for ease of reconnect etc.
     def connect(self, world):
         self.world = world
-        StartCoroutine(self._connect, self)
         self.connect_time = None
+
+        StartCoroutine(self._connect, self)
 
     async def _connect(self):
         world    = self.world
@@ -114,8 +119,6 @@ class Connection(wx.SplitterWindow):
 
         prefs.set('last_world', world.get('name'))
 
-        self.main_window = wx.GetApp().GetTopWindow()
-
         self.mcp = MCPCore(self)
 
         if self.world.get('auto_login'):
@@ -125,18 +128,17 @@ class Connection(wx.SplitterWindow):
                 login_script = re.sub('%p', self.world.get('password', ''), login_script)
             self.output(login_script + "\n")
 
-        # TODO - 'if world.connection.keepalive'
-        #self.keepalive.Start()
         while True:
-            line = await self.reader.readline()
-            if not line: break
+            data = await self.reader.read(65535)
+            if not data: break
 
-            line = line.decode('latin1').rstrip()
-            self.output_pane.display(line)
+            self.output_pane.display(data)
 
     def output(self, stuff):
+        if isinstance(stuff, str):
+            stuff = bytes(stuff, self.world.get('charset') or 'latin1')
         if self.writer:
-            self.writer.write(stuff.encode('latin1'))
+            self.writer.write(stuff)
         else:
             print(f"Tried to write stuff to closed writer: {stuff}")
 
@@ -146,27 +148,3 @@ class Connection(wx.SplitterWindow):
 
     def is_connected(self):
         return True if self.writer else False
-
-
-class Keepalive(wx.EvtHandler):
-    ######################
-    # This is a stupid brute-force keepalive that periodically tickles the
-    # connection by sending a single space.  Not magical or brilliant.
-    def __init__(self, connection):
-        wx.EvtHandler.__init__(self)
-        self.connection = connection
-        self.timer = wx.Timer()
-
-        self.timer.Bind(wx.EVT_TIMER, self.on_keepalive)
-
-    def Start(self):
-        self.timer.Start(60000, False) # 1 minute TODO make this a pref?
-
-    def Stop(self):
-        self.timer.Stop()
-
-    def on_keepalive(self, evt):
-        # TODO - this is pretty brute-force, innit?
-        # This'll likely break on worlds that actually
-        # are character-based instead of line-based.
-        self.connection.output(" ")
