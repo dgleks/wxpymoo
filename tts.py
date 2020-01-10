@@ -1,5 +1,4 @@
 # Tts functions, used for cross platform compatibility.
-import vars
 import platform
 if platform.system()=="Windows":
     import Tolk

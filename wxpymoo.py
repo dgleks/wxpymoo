@@ -15,10 +15,12 @@ def run():
     import prefs
     import worlds
     import theme
+    import tts
 
     prefs.Initialize()
     worlds.Initialize()
     theme.Initialize()
+    tts.initialize()
 
     frame = Main(None, "wxpymoo")
     frame.Show(True)
