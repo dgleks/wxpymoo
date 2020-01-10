@@ -5,6 +5,7 @@ import re
 
 import prefs
 import utility
+import tts
 from editor import Editor
 from window.basepane import BasePane
 from filters.ansi import fansi_replace
@@ -81,6 +82,7 @@ class OutputPane(BasePane):
     ######################################
     def WriteText(self, rest):
         super(OutputPane, self).WriteText(rest)
+        tts.say(rest, 0)
         self.ScrollIfAppropriate()
 
     def is_at_bottom(self):
