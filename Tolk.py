@@ -8,7 +8,7 @@
 
 from ctypes import cdll, CFUNCTYPE, c_bool, c_wchar_p
 
-_tolk = cdll.LoadLibrary("Tolk.dll")
+_tolk = ctypes.CDLL("Tolk.dll")
 
 _proto_load = CFUNCTYPE(None)
 load = _proto_load(("Tolk_Load", _tolk))
