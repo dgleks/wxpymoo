@@ -6,9 +6,11 @@
  #  License:        LGPLv3
  ##
 
-from ctypes import cdll, CFUNCTYPE, c_bool, c_wchar_p
+import os
+os.add_dll_directory(os.getcwd())
+from ctypes import cdll, CDLL, CFUNCTYPE, c_bool, c_wchar_p
 
-_tolk = ctypes.CDLL("Tolk.dll")
+_tolk = CDLL("Tolk.dll")
 
 _proto_load = CFUNCTYPE(None)
 load = _proto_load(("Tolk_Load", _tolk))
