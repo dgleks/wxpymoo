@@ -6,14 +6,15 @@ elif platform.system()=="Linux":
     import speechd
 elif platform.system()=="Darwin":
     from AppKit import *
-
+client = NOne
 def initialize():
+    global client
     if platform.system()=="Windows":
         Tolk.load()
     elif platform.system()=="Linux":
-        vars.client = speechd.SSIPClient("")
+        client = speechd.SSIPClient("")
     elif platform.system()=="Darwin":
-        vars.client=NSSpeechSynthesizer.alloc().initWithVoice_(None)
+        client=NSSpeechSynthesizer.alloc().initWithVoice_(None)
 
 def say(text, interrupt):
     if platform.system()=="Windows":
@@ -23,16 +24,16 @@ def say(text, interrupt):
             Tolk.output(text)
     elif platform.system()=="Linux":
         if interrupt==1:
-            vars.client.cancel()
-        vars.client.speak(text)
+            client.cancel()
+        client.speak(text)
     elif platform.system()=="Darwin":
         if interrupt:
-            vars.client.stopSpeaking()
-        vars.client.startSpeakingString_(text)
+            client.stopSpeaking()
+        client.startSpeakingString_(text)
 def deinitialize():
     if platform.system()=="Windows":
         Tolk.unload()
     elif platform.system()=="Linux":
-        vars.client.close()
+        client.close()
     elif platform.system()=="Darwin":
-        vars.client.release()
+        client.release()
