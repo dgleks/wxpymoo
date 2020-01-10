@@ -6,7 +6,7 @@ elif platform.system()=="Linux":
     import speechd
 elif platform.system()=="Darwin":
     from AppKit import *
-client = NOne
+client = None
 def initialize():
     global client
     if platform.system()=="Windows":
