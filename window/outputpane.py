@@ -82,7 +82,7 @@ class OutputPane(BasePane):
     ######################################
     def WriteText(self, rest):
         super(OutputPane, self).WriteText(rest)
-        [tts.say(f"{t}\r\n", 0) for t in rest.splitlines()]
+        [tts.say(f"{t}\r\n", 0) if len(t.split()) > 0 for t in rest.splitlines()]
         self.ScrollIfAppropriate()
 
     def is_at_bottom(self):
